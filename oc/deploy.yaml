@@ -21,4 +21,16 @@ spec:
       - image: image-registry.openshift-image-registry.svc:5000/rishhabhhanday-dev/instacapture:latest
         name: instacapture
         resources: {}
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
 status: {}

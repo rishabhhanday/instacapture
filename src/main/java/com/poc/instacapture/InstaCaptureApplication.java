@@ -9,5 +9,4 @@ public class InstaCaptureApplication {
     public static void main(String[] args) {
         SpringApplication.run(InstaCaptureApplication.class, args);
     }
-
 }
