@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: instacapture
+  name: instacapture
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instacapture
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: instacapture
+    spec:
+      containers:
+      - image: image-registry.openshift-image-registry.svc:5000/rishhabhhanday-dev/instacapture:latest
+        name: instacapture
+        resources: {}
+status: {}

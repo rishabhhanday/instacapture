@@ -1,0 +1,53 @@
+apiVersion: v1
+items:
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: instacapture
+    name: instacapture
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewBuild
+    creationTimestamp: null
+    labels:
+      build: instacapture
+    name: instacapture
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: instacapture:latest
+    postCommit: {}
+    resources: {}
+    source:
+      binary: {}
+      type: Binary
+    strategy:
+      dockerStrategy:
+        from:
+          kind: DockerImage
+          name: redhat-openjdk18-openshift
+      type: Docker
+    triggers:
+    - github:
+        secret: 2VL2QRchQRuvlsxP7rOG
+      type: GitHub
+    - generic:
+        secret: QA770U_O9-KFR6kzoYMs
+      type: Generic
+  status:
+    lastVersion: 0
+kind: List
+metadata: {}
