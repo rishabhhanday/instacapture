@@ -3,22 +3,24 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: instacapture
-  name: instacapture
+    app: instacapture-message-broker
+  name: instacapture-message-broker
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: instacapture
+      app: instacapture-message-broker
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: instacapture
+        app: instacapture-message-broker
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
-      - image: image-registry.openshift-image-registry.svc:5000/rishhabhhanday-dev/instacapture:latest
-        name: instacapture
+      - image: rabbitmq:3-management
+        name: rabbitmq
         resources: {}
 status: {}
