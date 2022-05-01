@@ -1,6 +1,7 @@
 package com.poc.instacapture.models.dao;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,6 @@ public class CommentData {
     private String username;
     private String timestamp;
     private String sentimentScore;
+    @JsonProperty("isAddressed")
+    private boolean isAddressed;
 }

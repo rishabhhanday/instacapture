@@ -1,19 +1,23 @@
 package com.poc.instacapture.service.impl;
 
+import com.amazonaws.services.comprehend.AmazonComprehend;
+import com.amazonaws.services.comprehend.model.DetectSentimentRequest;
+import com.amazonaws.services.comprehend.model.DetectSentimentResult;
 import com.poc.instacapture.service.DetectSentimentService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.comprehend.model.DetectSentimentResponse;
-import software.amazon.awssdk.services.comprehend.model.SentimentScore;
-import software.amazon.awssdk.services.comprehend.model.SentimentType;
 
 @Service
+@AllArgsConstructor
 public class DetectSentimentServiceImpl implements DetectSentimentService {
+    private final AmazonComprehend comprehendClient;
+
     @Override
-    public DetectSentimentResponse detectSentiment() {
-        return DetectSentimentResponse
-                .builder()
-                .sentiment(SentimentType.NEGATIVE)
-                .sentimentScore(SentimentScore.builder().negative(95F).positive(2F).mixed(1F).neutral(2F).build())
-                .build();
+    public DetectSentimentResult detectSentiment(String comment) {
+
+        DetectSentimentRequest detectSentimentRequest = new DetectSentimentRequest()
+                .withText(comment)
+                .withLanguageCode("en");
+        return comprehendClient.detectSentiment(detectSentimentRequest);
     }
 }

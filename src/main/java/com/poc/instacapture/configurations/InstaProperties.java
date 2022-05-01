@@ -20,4 +20,5 @@ public class InstaProperties {
     private String mediaId;
     private String commentUrl;
     private String fields;
+    private String facebookUrl;
 }

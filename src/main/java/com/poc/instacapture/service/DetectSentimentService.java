@@ -1,8 +1,8 @@
 package com.poc.instacapture.service;
 
 
-import software.amazon.awssdk.services.comprehend.model.DetectSentimentResponse;
+import com.amazonaws.services.comprehend.model.DetectSentimentResult;
 
 public interface DetectSentimentService {
-    DetectSentimentResponse detectSentiment();
+    DetectSentimentResult detectSentiment(String comment);
 }

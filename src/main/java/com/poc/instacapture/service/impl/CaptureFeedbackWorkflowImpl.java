@@ -1,5 +1,6 @@
 package com.poc.instacapture.service.impl;
 
+import com.amazonaws.services.comprehend.model.DetectSentimentResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poc.instacapture.configurations.InstaProperties;
 import com.poc.instacapture.models.responses.CommentData;
@@ -8,9 +9,9 @@ import com.poc.instacapture.service.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.comprehend.model.DetectSentimentResponse;
-import software.amazon.awssdk.services.comprehend.model.SentimentType;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,9 +32,9 @@ public class CaptureFeedbackWorkflowImpl implements CaptureFeedbackWorkflow {
         InstaMedia instaMediaResponse = instaCommentApiClient
                 .getMediaInformationByMediaId(latestMediaId);
 
-        log.info("total comments={} on ID={}",
-                instaMediaResponse.getComments().getData().size(),
-                instaMediaResponse.getId());
+        if (instaMediaResponse.getComments() == null) {
+            return;
+        }
 
         CommentData commentData = instaMediaResponse
                 .getComments()
@@ -44,22 +45,29 @@ public class CaptureFeedbackWorkflowImpl implements CaptureFeedbackWorkflow {
 
         log.info("checking if comment was already addressed.");
         if (commentData != null && !instaMediaCachingService.isCommentAddressed(commentData)) {
-            DetectSentimentResponse detectSentimentResponse = detectSentimentService.detectSentiment();
+            DetectSentimentResult detectSentimentResult = detectSentimentService
+                    .detectSentiment(commentData.getText());
 
             log.info("Checking if the sentiment of comment is negative, comment={}", commentData.getText());
-            if (detectSentimentResponse.sentiment().equals(SentimentType.NEGATIVE)) {
+            if (detectSentimentResult.getSentiment().equals("NEGATIVE")) {
                 log.info("Negative feedback detected");
                 com.poc.instacapture.models.dao.CommentData comment = objectMapper
                         .convertValue(commentData, com.poc.instacapture.models.dao.CommentData.class);
 
-                comment.setSentimentScore(String.valueOf(detectSentimentResponse.sentimentScore().negative()));
+                comment.setSentimentScore(String.valueOf(detectSentimentResult.getSentimentScore().getNegative()));
+                comment.setAddressed(false);
 
-                com.poc.instacapture.models.dao.InstaMedia instaMedia = instaMediaCachingService.getInstaMedia() == null
-                        ? objectMapper.convertValue(instaMediaResponse, com.poc.instacapture.models.dao.InstaMedia.class)
-                        : instaMediaCachingService.getInstaMedia();
-
-                List<com.poc.instacapture.models.dao.CommentData> data = instaMedia.getComments().getData();
-                data.add(comment);
+                com.poc.instacapture.models.dao.InstaMedia instaMedia;
+                if (instaMediaCachingService.getInstaMedia() == null) {
+                    instaMedia = objectMapper.convertValue(instaMediaResponse, com.poc.instacapture.models.dao.InstaMedia.class);
+                    instaMedia.getComments().setData(Collections.singletonList(comment));
+                } else {
+                    instaMedia = instaMediaCachingService.getInstaMedia();
+                    List<com.poc.instacapture.models.dao.CommentData> data =
+                            new ArrayList<>(instaMedia.getComments().getData());
+                    data.add(comment);
+                    instaMedia.getComments().setData(data);
+                }
 
                 log.info("caching the response.");
                 instaMediaCachingService.cache(instaMedia);
@@ -67,4 +75,14 @@ public class CaptureFeedbackWorkflowImpl implements CaptureFeedbackWorkflow {
             }
         }
     }
+
+    @Override
+    public com.poc.instacapture.models.dao.InstaMedia removeComment(String commentId) {
+        instaCommentApiClient.deleteComment(commentId);
+        com.poc.instacapture.models.dao.InstaMedia instaMedia = instaMediaCachingService.removeCommentFromCache(commentId);
+        instaMediaDao.save(instaMedia);
+        return instaMedia;
+    }
+
+
 }

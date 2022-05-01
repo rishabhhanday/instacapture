@@ -9,4 +9,6 @@ public interface InstaMediaCachingService {
     InstaMedia cache(InstaMedia instaMedia);
 
     InstaMedia getInstaMedia();
+
+    InstaMedia removeCommentFromCache(String commentId);
 }

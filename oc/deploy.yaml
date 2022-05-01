@@ -10,7 +10,7 @@ spec:
   selector:
     matchLabels:
       app: instacapture
-  strategy: {}
+  strategy: { }
   template:
     metadata:
       creationTimestamp: null
@@ -18,23 +18,20 @@ spec:
         app: instacapture
     spec:
       containers:
-      - image: image-registry.openshift-image-registry.svc:5000/rishhabhhanday-dev/instacapture:latest
-        name: instacapture
-        env:
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: insta-capture
-                key: access_key
-          - name: AWS_SECRET_ACCESS_KEY
+        - image: image-registry.openshift-image-registry.svc:5000/rishhabhhanday-dev/instacapture:latest
+          name: instacapture
+          env:
+            - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
                   name: insta-capture
-                  key: access_key
-          - name: AWS_DEFAULT_REGION
+                  key: aws.access.key
+            - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: insta-capture
-                  key: region
-        resources: {}
-status: {}
+                  key: aws.secret.key
+            - name: AWS_REGION
+              value: ap-south-1
+          resources: { }
+status: { }
