@@ -12,7 +12,7 @@ public class FeedbackController {
     private final InstaMediaCachingService instaMediaCachingService;
     private final CaptureFeedbackWorkflow captureFeedbackWorkflow;
 
-    @GetMapping("/comments/")
+    @GetMapping("/comments")
     public InstaMedia getMedia() {
         captureFeedbackWorkflow.captureFeedback();
         return instaMediaCachingService.getInstaMedia();
