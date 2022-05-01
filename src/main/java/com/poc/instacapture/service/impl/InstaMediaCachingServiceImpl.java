@@ -58,4 +58,15 @@ public class InstaMediaCachingServiceImpl implements InstaMediaCachingService {
 
         return instaMedia;
     }
+
+    @Override
+    public InstaMedia addressComment(String commentId) {
+        for (com.poc.instacapture.models.dao.CommentData commentData : instaMedia.getComments().getData()) {
+            if (commentData.getId().equals(commentId)) {
+                commentData.setAddressed(true);
+            }
+        }
+
+        return instaMedia;
+    }
 }

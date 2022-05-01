@@ -84,5 +84,18 @@ public class CaptureFeedbackWorkflowImpl implements CaptureFeedbackWorkflow {
         return instaMedia;
     }
 
+    @Override
+    public com.poc.instacapture.models.dao.InstaMedia replyOnComment(String commentId, String reply) {
+        instaCommentApiClient.replyOnComment(commentId, reply);
+        com.poc.instacapture.models.dao.InstaMedia instaMedia = instaMediaCachingService.addressComment(commentId);
 
+        return instaMediaDao.save(instaMedia);
+    }
+
+    @Override
+    public com.poc.instacapture.models.dao.InstaMedia emailComment(String commentId, String emailText) {
+        //TODO: send email
+        com.poc.instacapture.models.dao.InstaMedia instaMedia = instaMediaCachingService.addressComment(commentId);
+        return instaMediaDao.save(instaMedia);
+    }
 }

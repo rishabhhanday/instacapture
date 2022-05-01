@@ -18,4 +18,5 @@ public class InstaMedia {
     private InstaMediaComment comments;
     @JsonProperty("comments_count")
     private Integer commentsCount;
+    private String timestamp;
 }

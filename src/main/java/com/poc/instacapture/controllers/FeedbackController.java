@@ -4,10 +4,7 @@ import com.poc.instacapture.models.dao.InstaMedia;
 import com.poc.instacapture.service.CaptureFeedbackWorkflow;
 import com.poc.instacapture.service.InstaMediaCachingService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -22,7 +19,17 @@ public class FeedbackController {
     }
 
     @DeleteMapping("/comments/{id}")
-    public InstaMedia getLatestNegativeMedia(@PathVariable(value = "id") String id) {
+    public InstaMedia removeComment(@PathVariable(value = "id") String id) {
         return captureFeedbackWorkflow.removeComment(id);
+    }
+
+    @PostMapping("/comments/{id}/replies")
+    public InstaMedia replyOnComment(@PathVariable(value = "id") String id, @RequestParam String message) {
+        return captureFeedbackWorkflow.replyOnComment(id, message);
+    }
+
+    @PostMapping("/comments/{id}/email")
+    public InstaMedia emailComment(@PathVariable(value = "id") String id, @RequestParam String message) {
+        return captureFeedbackWorkflow.emailComment(id, message);
     }
 }
