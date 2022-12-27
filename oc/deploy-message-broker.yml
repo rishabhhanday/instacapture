@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: instacapture-message-broker
+  name: instacapture-message-broker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instacapture-message-broker
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: instacapture-message-broker
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+      - image: rabbitmq:3-management
+        name: rabbitmq
+        resources: {}
+status: {}

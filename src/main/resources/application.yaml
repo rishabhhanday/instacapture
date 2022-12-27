@@ -1,0 +1,14 @@
+spring:
+  config.import: configserver:http://instacapture-config-server-rishhabhhanday-dev.apps.sandbox.x8i5.p1.openshiftapps.com
+  application.name: instacapture
+  profiles.active: dev
+  rabbitmq:
+    host: instacapture-message-broker
+    username: guest
+    password: guest
+  cloud:
+    bus:
+      enabled: true
+      refresh:
+        enabled: true
+management.endpoints.web.exposure.include: refresh, busrefresh
